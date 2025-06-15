@@ -13,3 +13,12 @@
   alpha: 0.6
   ghostName: Svarshik
   ghostDescription: Вам кажется.
+
+- type: customGhost
+  id: XeliteX-ghost
+  ckey: _XeliteX_FXX_
+  sprite: /Textures/_Reserve/CustomGhosts/xelitex-ghost.rsi
+  alpha: 1
+  ghostName: TTM Head
+  ghostDescription: S O M E M O N E  D Y I N G  H E R E... A N D I T A I N T M E!
+
