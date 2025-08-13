@@ -1,0 +1,184 @@
+- type: entity
+  parent: VendingMachine
+  id: VendingMachineshopZ
+  name: Раздатчик Ресурсов
+  suffix: ZA
+  description: Раздатчик с блюспейс хранилищем имеющий все необходимое для войны с зомби.
+  components:
+  - type: VendingMachine
+    pack: ZAshopVendInventory
+    offState: off
+    brokenState: broken
+    normalState: normal-unshaded
+  - type: Advertise
+    pack: AmmoVendAds
+  - type: SpeakOnUIClosed
+    pack: GenericVendGoodbyes
+  - type: Sprite
+    sprite: _ZA/shop.rsi
+    layers:
+    - state: "off"
+      map: ["enum.VendingMachineVisualLayers.Base"]
+    - state: "off"
+      map: ["enum.VendingMachineVisualLayers.BaseUnshaded"]
+      shader: unshaded
+    - state: panel
+      map: ["enum.WiresVisualLayers.MaintenancePanel"]
+
+- type: vendingMachineInventory
+  id: ZAshopVendInventory
+  startingInventory:
+    WeaponSubMachineGunWt550: 30
+    MagazinePistolSubMachineGunTopMounted: 100
+
+    WeaponLaserSvalinn: 15
+    PowerCellHigh: 10
+
+    WeaponShotgunEnforcer: 12
+    BoxLethalshot: 15
+    BoxShotgunIncendiary: 5
+
+    WeaponLaserCarbine: 20
+    WeaponLaserGun: 30
+    WeaponMakeshiftLaser: 50
+    WeaponAdvancedLaser: 5
+    WeaponLaserCannon: 3
+
+    WeaponCapacitorRecharger: 10
+    TurboItemRecharger: 3
+    PortableRecharger: 5
+
+    WeaponRifleAk: 7
+    MagazineLightRifle: 20
+    WeaponRifleLecter: 12
+    MagazineRifle: 24
+
+    ClothingBackpackDuffelMilitary: 40
+    ClothingShoesBootsSyndieFilled: 40
+    ClothingBeltMilitaryWebbing: 30
+    ClothingOuterArmorBasicSlim: 40
+    ClothingOuterArmorRiot: 30
+    ClothingOuterArmorCentcommCarapace: 1
+    ClothingHeadHelmetBasic: 100
+
+    MedkitCombatFilledDS: 20
+    MedkitCombatFilled: 40
+    MedkitAdvancedFilled: 50
+    MedkitFilled: 100
+
+    BoxMREDS: 500
+    DrinkWaterBottleFull: 200
+    FoodTinMRE: 400
+    FoodTinPeaches: 400
+    FoodTinBeans: 400
+
+    SheetSteel: 10
+    MaterialWoodPlank: 20
+
+    TelescopicShield: 5
+    RiotShield: 20
+    MakeshiftShield: 50
+    TrackingImplanter: 100
+    ClothingBeltUtilityEngineering: 50
+    ClothingBeltChiefEngineerFilled: 10
+    ClothingBackpackDuffelSurgeryFilled: 10
+
+#medic
+
+- type: entity
+  name: Универсальный Медицинский Шов
+  description: Лечит крайне быстро ожоги и ушибы.
+  parent: BaseHealingItem
+  id: MedicatedUniversal
+  suffix: Full
+  components:
+  - type: Sprite
+    sprite: _ZA/Medical.rsi
+    state: icon
+  - type: Tag
+    tags:
+    - Brutepack
+  - type: Sprite
+    state: medicated-suture
+  - type: Item
+    heldPrefix: medicated-suture
+    storedRotation: -90
+  - type: Healing
+    damageContainers:
+      - Biological
+    damage:
+      groups:
+        Brute: -20
+        Burn: -20 # was 10 for each, Buffed due to Limb Damage Changes (Goobstation)
+        Toxin: -5
+    bloodlossModifier: -10 # a suture should stop ongoing bleeding
+    delay: 0.4
+    healingBeginSound:
+      path: "/Audio/Items/Medical/brutepack_begin.ogg"
+      params:
+        volume: 1.0
+        variation: 0.125
+    healingEndSound:
+      path: "/Audio/Items/Medical/brutepack_end.ogg"
+      params:
+        volume: 1.0
+        variation: 0.125
+  - type: Stack
+    stackType: MedicatedUniversal
+    count: 50 #Was 10, Buffed due to surgery changes (Goobstation)
+  # Goobstation - Custom stack splitting dialog
+  - type: UserInterface
+    interfaces:
+      enum.StackCustomSplitUiKey.Key:
+        type: StackCustomSplitBoundUserInterface
+  - type: StackPrice
+    price: 20
+
+- type: stack
+  id: MedicatedUniversal
+  name: MedicatedUniversal
+  icon: {sprite: "_ZA/Medical.rsi", state: icon }
+  spawn: MedicatedUniversal
+  maxCount: 50 #Was 10, bumped up due to Shitmed changes. (Goobstation)
+
+#station
+- type: gameMap
+  id: ZombieAttack
+  mapName: 'Аванпост Тень Чернобыля'
+  mapPath: /Maps/_ZA/ZombieAttack.yml # Goobstation
+  minPlayers: 0
+  maxPlayers: 100
+  stations:
+    ZombieAttack:
+      stationProto: StandardNanotrasenStation
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: '{0} Chernobyl outpost {1}'
+          nameGenerator:
+            !type:NanotrasenNameGenerator
+            prefixCreator: 'ZA'
+        - type: StationEmergencyShuttle
+          emergencyShuttlePath: /Maps/Shuttles/emergency_omega.yml
+        - type: StationJobs
+          availableJobs:
+            #service
+            Captain: [ 1, 1 ]
+            BlueshieldOfficer: [ 1, 1 ] # Goobstation
+            Bartender: [ 2, 2 ]
+            Janitor: [ -1, -1 ]
+            #engineering
+            AtmosphericTechnician: [ -1, -1 ]
+            #medical
+            ChiefMedicalOfficer: [ 1, 1 ]
+            MedicalDoctor: [ -1, -1 ]
+            Paramedic: [ -1, -1 ]
+            #security
+            HeadOfSecurity: [ 1, 1 ]
+            SecurityOfficer: [ -1, -1 ]
+            Brigmedic: [ 2, 2 ]
+            #civilian
+            Passenger: [ -1, -1 ]
+            Clown: [ -1, -1 ]
+            Mime: [ -1, -1 ]
+
+
